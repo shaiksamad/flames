@@ -1,3 +1,5 @@
+from collections import Counter
+
 def flames(name: str, cname: str) -> str:
     """
     name: your name
@@ -9,16 +11,15 @@ def flames(name: str, cname: str) -> str:
     name = name.replace(" ", '').lower()
     cname = cname.replace(" ", '').lower()
     
-    # counting repeated letters
-    n = {a: name.count(a) for a in (name)}
-    cn = {a: cname.count(a) for a in (cname)}
+    count_name = Counter(name)  # counts letters in name
+    count_cname = Counter(cname)  # counts letters in cname
     
-    # removing duplicates
-    tn = {}
-    [tn.update({a: abs(n[a]-cn[a]) if a in cn else n[a]}) for a in name]
-    [tn.update({b: cn[b]}) for b in cname if b not in tn]
-
-    counter = sum(tn.values())
+    # remove common letters 
+    total_count = count_name.copy()
+    total_count.subtract(count_cname)
+    
+    # total letters count
+    counter = sum(map(abs, total_count.values()))
     
     flames = {
         "F": "Friends",
@@ -29,9 +30,9 @@ def flames(name: str, cname: str) -> str:
         "S": "Siblings"
     }
     f = list(flames.keys())
-    si = 0  # start index
+    si = 0  # start index, i.e. from where counting starts
     
-    # striking a letter at every count
+    # striking a letter at every last count
     while f:
         pop = counter % len(f)-1
         popped = f.pop(pop)
@@ -43,10 +44,10 @@ def flames(name: str, cname: str) -> str:
 
 
 if __name__ == "__main__":
-    # name = input("Enter your name: ")
-    # cname = input("Enter your crush name: ")
+    name = input("Enter your name: ")
+    cname = input("Enter your crush name: ")
     
-    name = "Alexa"
-    cname = "Siri"
+    # name = "Alexa"
+    # cname = "Siri"
     
     print(flames(name, cname))
